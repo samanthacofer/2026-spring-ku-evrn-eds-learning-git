@@ -4,25 +4,3 @@ author: "Samantha Cofer"
 format: html
 ---
 
-## Quarto
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-#| label: plot-cars
-plot(cars, 
-     col = "orange",
-     main = "An Amazing Plot")
-```
-
-You can add options to executable code like this 
-
-```{r}
-#| echo: false
-#| label: do-math
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
