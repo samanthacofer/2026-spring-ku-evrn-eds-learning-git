@@ -27,3 +27,30 @@ library("ggplot2")
 konza_data <- read_csv("data/NEON.D06.KONZ.DP1.10058.001.div_1m2Data.2025-08.basic.20251222T234053Z.csv")
 ```
 
+## Data summarizing with `dplyr`
+
+We'll next use the dplyr package to summarize some different apsects of the data.
+
+```{r}
+#| label: summarize-with-dplyr
+
+# first summary to make will be a count of the number of observations in 
+# each family
+konza_data %>% 
+  group_by(family) %>%
+  tally() %>%
+  arrange(desc(n))
+```
+
+This analysis showed that Poaceae and Asteraceae are among the most common family
+found in these plots. 
+
+```{r}
+#| label: mean-percent-cover-by-family
+
+# The goal is to calculate the mean percent cover of each family 
+
+
+```
+
+
