@@ -91,10 +91,17 @@ Next up, we'll use `ggplot2` to make some figures
 ```{r}
 #| label: elevation-percent-by-family
 
-ggplot(data = konza_data,
-       aes(x = elevation,
-           y = percentCover)) + 
-  geom_point()
+konza_data %>%
+  filter(!is.na(family)) %>%
+  filter(family == "Asteraceae" | family == "Poaceae") %>%
+  ggplot(aes(x = elevation,
+           y = percentCover,
+           color = family)) + 
+  geom_point() +
+  geom_smooth() +
+  labs(title = "Compariosn of Asteraceae and Paceae by Elevation",
+       y = "Percent Cover",
+       x = "Elevation (m)")
 ```
 
 
