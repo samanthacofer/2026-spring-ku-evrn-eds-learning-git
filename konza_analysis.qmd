@@ -86,6 +86,18 @@ konza_data %>%
 ```
 
 
+Next up, we'll use `ggplot2` to make some figures 
+
+```{r}
+#| label: elevation-percent-by-family
+
+ggplot(data = konza_data,
+       aes(x = elevation,
+           y = percentCover)) + 
+  geom_point()
+```
+
+
 ## Next steos 
 
 Need to demonstrate the use of the `mutate` funciton, an then how to use `ggplot2`. 
