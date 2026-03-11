@@ -72,6 +72,20 @@ konza_data %>%
   arrange(desc(mean_pcnt_cover))
 ```
 
+Next we'll learn to use `mutate()`, which is a function to create a new column based on contents form an existing column.
+
+```{r}
+#| label: use-mutate
+
+# select pulls out the columns you want
+# mutate creates a mew column with whatever content you want
+# which can include manipulation of an existing column
+konza_data %>%
+  select(scientificName, family, percentCover) %>%
+  mutate(propCover = percentCover / 100)
+```
+
+
 ## Next steos 
 
 Need to demonstrate the use of the `mutate` funciton, an then how to use `ggplot2`. 
