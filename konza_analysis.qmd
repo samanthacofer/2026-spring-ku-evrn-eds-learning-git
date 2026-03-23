@@ -94,20 +94,17 @@ Next up, we'll use `ggplot2` to make some figures
 konza_data %>%
   filter(!is.na(family)) %>%
   filter(family == "Asteraceae") %>%
-  ggplot(aes(x = elevation,
-             y = percentCover)) +
-  geom_point(aes(shape = plotID,
-                 colour = elevation),
-             size = 3) +
-  geom_smooth() +
-  labs(title = "Compariosn of Asteraceae and Paceae by Elevation",
+  ggplot() +
+  geom_boxplot(aes(x = elevation,
+                   y = percentCover,
+                   group = elevation)) +
+  labs(title = "Cover of Asteraceae by Elevation",
        y = "Percent Cover",
-       x = "Elevation (m)") +
-  scale_color_viridis_c()
+       x = "Elevation")
 ```
 
 
-## Next steos 
+## Next steps 
 
 Need to demonstrate the use of the `mutate` funciton, an then how to use `ggplot2`. 
 Some interesting polots could be looking at the effect of elevation on plant cover.
