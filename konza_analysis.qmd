@@ -147,3 +147,22 @@ konza_data %>%
 ```
 
 This shows that Fabacea is most prevelent at elevations around 400m. 
+
+Next, we will visualize family elevation vs. percent cover in
+a point graph. This is to create an easily readable color coded graph to see 
+which families are more prevelent at different elevations.
+
+```{r}
+
+#| label: family-elevation-percent-cover 
+
+  ggplot(data = konza_data %>%
+           filter(!is.na(family)),
+       aes(x = elevation,
+           y = percentCover)) +
+  geom_point(aes(color = family))
+  
+```
+
+After filtering out the NA families, which was a majority of high percent 
+covers, we can clearly see that most families are under 25% cover in most samples.
