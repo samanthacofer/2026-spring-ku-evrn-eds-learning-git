@@ -130,6 +130,9 @@ fit line on a point graph.
 
 ```{r}
 #| label: comparison-of-fabaceae-by-elevation
+
+
+#| label: comparison-of-fabaceae-by-elevation
 konza_data %>%
   filter(!is.na(family)) %>%
   filter(family == "Fabaceae") %>%

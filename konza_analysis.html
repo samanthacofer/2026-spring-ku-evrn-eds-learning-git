@@ -294,8 +294,73 @@ date  (1): endDate
 </div>
 </div>
 </div>
-<p>This shows that elevation does not significantly impact the presence of Poaceae. ## Next steps</p>
-<p>Need to demonstrate the use of the <code>mutate</code> funciton, an then how to use <code>ggplot2</code>. Some interesting polots could be looking at the effect of elevation on plant cover.</p>
+<p>This shows that elevation does not significantly impact the presence of Poaceae.</p>
+<p>Next, we will visualize the percent cover of Fabaceae by elevtion. This is to analyze how elevation impacts the prevelence of Fabacea through a smooth best- fit line on a point graph.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: comparison-of-fabaceae-by-elevation</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>konza_data <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(family)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(family <span class="sc">==</span> <span class="st">"Fabaceae"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> elevation,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> percentCover,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> family)) <span class="sc">+</span> </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Compariosn of Fabaceae by Elevation"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Percent Cover"</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Elevation (m)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using method = 'loess' and formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+: pseudoinverse used at 350.63</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+: neighborhood radius 50.565</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+: reciprocal condition number 7.7795e-17</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+: There are other near singularities as well. 2486.5</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x
+else if (is.data.frame(newdata))
+as.matrix(model.frame(delete.response(terms(object)), : pseudoinverse used at
+350.63</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x
+else if (is.data.frame(newdata))
+as.matrix(model.frame(delete.response(terms(object)), : neighborhood radius
+50.565</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x
+else if (is.data.frame(newdata))
+as.matrix(model.frame(delete.response(terms(object)), : reciprocal condition
+number 7.7795e-17</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x
+else if (is.data.frame(newdata))
+as.matrix(model.frame(delete.response(terms(object)), : There are other near
+singularities as well. 2486.5</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="konza_analysis_files/figure-html/comparison-of-fabaceae-by-elevation-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This shows that Fabacea is most prevelent at elevations around 400m.</p>
 </section>
 
 </main>
