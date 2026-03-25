@@ -1,7 +1,7 @@
 ---
 title: "Konza Vegetation Analysis"
 author: "Samantha Cofer"
-format: html
+format: docx
 execute: 
   echo: false
   warning: false
