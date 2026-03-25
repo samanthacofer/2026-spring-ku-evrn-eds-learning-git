@@ -122,7 +122,25 @@ konza_data %>%
        x = "Elevation")
 ```
 
-This shows that elevation does not significantly impact the presence of Poaceae. 
+This shows that elevation does not significantly impact the presence of Poaceae.
 
+Next, we will visualize the percent cover of Fabaceae by elevtion. This is to 
+analyze how elevation impacts the prevelence of Fabacea through a smooth best-
+fit line on a point graph.
 
+```{r}
+#| label: comparison-of-fabaceae-by-elevation
+konza_data %>%
+  filter(!is.na(family)) %>%
+  filter(family == "Fabaceae") %>%
+  ggplot(aes(x = elevation,
+           y = percentCover,
+           color = family)) + 
+  geom_point() +
+  geom_smooth() +
+  labs(title = "Compariosn of Fabaceae by Elevation",
+       y = "Percent Cover",
+       x = "Elevation (m)")
+```
 
+This shows that Fabacea is most prevelent at elevations around 400m. 
