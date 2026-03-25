@@ -21,41 +21,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -113,179 +78,620 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="loading-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="loading-the-data">Loading the data</h2>
 <p>The data are provided in csv files. We’ll use the tidyverse package ‘readr’ to open into R.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"readr"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"dplyr"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'dplyr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># read in the data</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>konza_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/NEON.D06.KONZ.DP1.10058.001.div_1m2Data.2025-08.basic.20251222T234053Z.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 468 Columns: 42</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>── Column specification ────────────────────────────────────────────────────────
-Delimiter: ","
-chr  (26): uid, namedLocation, domainID, siteID, geodeticDatum, plotType, nl...
-dbl   (7): decimalLatitude, decimalLongitude, coordinateUncertainty, elevati...
-lgl   (8): identificationQualifier, taxonIDRemarks, morphospeciesID, morphos...
-date  (1): endDate
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-</div>
-</div>
 </section>
 <section id="data-summarizing-with-dplyr" class="level2">
 <h2 class="anchored" data-anchor-id="data-summarizing-with-dplyr">Data summarizing with <code>dplyr</code></h2>
 <p>We’ll next use the dplyr package to summarize some different apsects of the data.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first summary to make will be a count of the number of observations in </span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># each family</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>konza_data <span class="sc">%&gt;%</span> </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(family) <span class="sc">%&gt;%</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tally</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 33 × 2
-   family             n
-   &lt;chr&gt;          &lt;int&gt;
- 1 Poaceae          118
- 2 &lt;NA&gt;             113
- 3 Asteraceae        74
- 4 Fabaceae          43
- 5 Cyperaceae        17
- 6 Euphorbiaceae     13
- 7 Asclepiadaceae    12
- 8 Cornaceae         12
- 9 Lamiaceae          7
-10 Solanaceae         7
-# ℹ 23 more rows</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">family</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Poaceae</td>
+<td style="text-align: right;">118</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">113</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Asteraceae</td>
+<td style="text-align: right;">74</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Fabaceae</td>
+<td style="text-align: right;">43</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cyperaceae</td>
+<td style="text-align: right;">17</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Euphorbiaceae</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Asclepiadaceae</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cornaceae</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lamiaceae</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Solanaceae</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rhamnaceae</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Violaceae</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Anacardiaceae</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Caprifoliaceae</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rubiaceae</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Acanthaceae</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Boraginaceae</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oxalidaceae</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rosaceae</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Celastraceae</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cupressaceae</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rutaceae</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ulmaceae</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Apiaceae</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cuscutaceae</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Fagaceae</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Linaceae</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lythraceae</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nyctaginaceae</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Onagraceae</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Polygalaceae</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Santalaceae</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Verbenaceae</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <p>This analysis showed that Poaceae and Asteraceae are among the most common family found in these plots.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The goal is to calculate the mean percent cover of each family </span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>konza_data <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(family) <span class="sc">%&gt;%</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_pcnt_cover =</span> <span class="fu">mean</span>(percentCover),</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd_pcnt_cover =</span> <span class="fu">sd</span>(percentCover)) <span class="sc">%&gt;%</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_pcnt_cover))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 33 × 3
-   family        mean_pcnt_cover sd_pcnt_cover
-   &lt;chr&gt;                   &lt;dbl&gt;         &lt;dbl&gt;
- 1 &lt;NA&gt;                    21.4          33.9 
- 2 Fagaceae                16            NA   
- 3 Cornaceae                6.75          4.41
- 4 Poaceae                  5.28          9.37
- 5 Fabaceae                 4.81          7.10
- 6 Ulmaceae                 4             1.41
- 7 Rhamnaceae               3.8           3.11
- 8 Anacardiaceae            3.75          1.5 
- 9 Asteraceae               2.51          4.72
-10 Rosaceae                 2.33          1.53
-# ℹ 23 more rows</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">family</th>
+<th style="text-align: right;">mean_pcnt_cover</th>
+<th style="text-align: right;">sd_pcnt_cover</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">21.3938053</td>
+<td style="text-align: right;">33.8664955</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Fagaceae</td>
+<td style="text-align: right;">16.0000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cornaceae</td>
+<td style="text-align: right;">6.7500000</td>
+<td style="text-align: right;">4.4133063</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Poaceae</td>
+<td style="text-align: right;">5.2796610</td>
+<td style="text-align: right;">9.3729795</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fabaceae</td>
+<td style="text-align: right;">4.8139535</td>
+<td style="text-align: right;">7.0962962</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ulmaceae</td>
+<td style="text-align: right;">4.0000000</td>
+<td style="text-align: right;">1.4142136</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rhamnaceae</td>
+<td style="text-align: right;">3.8000000</td>
+<td style="text-align: right;">3.1144823</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Anacardiaceae</td>
+<td style="text-align: right;">3.7500000</td>
+<td style="text-align: right;">1.5000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Asteraceae</td>
+<td style="text-align: right;">2.5135135</td>
+<td style="text-align: right;">4.7224130</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rosaceae</td>
+<td style="text-align: right;">2.3333333</td>
+<td style="text-align: right;">1.5275252</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Boraginaceae</td>
+<td style="text-align: right;">2.0000000</td>
+<td style="text-align: right;">2.5980762</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Celastraceae</td>
+<td style="text-align: right;">2.0000000</td>
+<td style="text-align: right;">1.4142136</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lythraceae</td>
+<td style="text-align: right;">2.0000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rutaceae</td>
+<td style="text-align: right;">2.0000000</td>
+<td style="text-align: right;">1.4142136</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Santalaceae</td>
+<td style="text-align: right;">2.0000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cyperaceae</td>
+<td style="text-align: right;">1.6176471</td>
+<td style="text-align: right;">1.5565327</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lamiaceae</td>
+<td style="text-align: right;">1.4285714</td>
+<td style="text-align: right;">0.9322272</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Solanaceae</td>
+<td style="text-align: right;">1.2857143</td>
+<td style="text-align: right;">0.9063270</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Apiaceae</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Asclepiadaceae</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">1.2792043</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Verbenaceae</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rubiaceae</td>
+<td style="text-align: right;">0.8750000</td>
+<td style="text-align: right;">0.7500000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Acanthaceae</td>
+<td style="text-align: right;">0.6666667</td>
+<td style="text-align: right;">0.2886751</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oxalidaceae</td>
+<td style="text-align: right;">0.6666667</td>
+<td style="text-align: right;">0.2886751</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Euphorbiaceae</td>
+<td style="text-align: right;">0.6538462</td>
+<td style="text-align: right;">0.4274252</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Caprifoliaceae</td>
+<td style="text-align: right;">0.6250000</td>
+<td style="text-align: right;">0.2500000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Violaceae</td>
+<td style="text-align: right;">0.6000000</td>
+<td style="text-align: right;">0.2236068</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cupressaceae</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cuscutaceae</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Linaceae</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nyctaginaceae</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Onagraceae</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Polygalaceae</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <p>This analysis showed that the largest percent cover is the <code>NA</code> taxa, which means it likely wasn’t able to be identified, but the highest mean percent cover is at 16% across the plots was Fagaceae.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The goal is to calculate the mean percent cover of each family </span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>konza_data <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(elevation<span class="sc">&gt;</span><span class="dv">390</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(family) <span class="sc">%&gt;%</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_pcnt_cover =</span> <span class="fu">mean</span>(percentCover),</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd_pcnt_cover =</span> <span class="fu">sd</span>(percentCover)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_pcnt_cover))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 21 × 3
-   family     mean_pcnt_cover sd_pcnt_cover
-   &lt;chr&gt;                &lt;dbl&gt;         &lt;dbl&gt;
- 1 &lt;NA&gt;                 23.6         37.6  
- 2 Fabaceae              5.98         8.26 
- 3 Poaceae               5.68        11.7  
- 4 Cornaceae             4.62         3.02 
- 5 Asteraceae            4.22         6.88 
- 6 Rutaceae              3           NA    
- 7 Rosaceae              2.33         1.53 
- 8 Lythraceae            2           NA    
- 9 Cyperaceae            1.45         1.52 
-10 Lamiaceae             1.43         0.932
-# ℹ 11 more rows</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">family</th>
+<th style="text-align: right;">mean_pcnt_cover</th>
+<th style="text-align: right;">sd_pcnt_cover</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">23.6372549</td>
+<td style="text-align: right;">37.5739376</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Fabaceae</td>
+<td style="text-align: right;">5.9807692</td>
+<td style="text-align: right;">8.2649631</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Poaceae</td>
+<td style="text-align: right;">5.6785714</td>
+<td style="text-align: right;">11.6656425</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cornaceae</td>
+<td style="text-align: right;">4.6250000</td>
+<td style="text-align: right;">3.0207615</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Asteraceae</td>
+<td style="text-align: right;">4.2166667</td>
+<td style="text-align: right;">6.8778547</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rutaceae</td>
+<td style="text-align: right;">3.0000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rosaceae</td>
+<td style="text-align: right;">2.3333333</td>
+<td style="text-align: right;">1.5275252</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lythraceae</td>
+<td style="text-align: right;">2.0000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cyperaceae</td>
+<td style="text-align: right;">1.4545455</td>
+<td style="text-align: right;">1.5240496</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lamiaceae</td>
+<td style="text-align: right;">1.4285714</td>
+<td style="text-align: right;">0.9322272</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Solanaceae</td>
+<td style="text-align: right;">1.2857143</td>
+<td style="text-align: right;">0.9063270</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Verbenaceae</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Caprifoliaceae</td>
+<td style="text-align: right;">0.7500000</td>
+<td style="text-align: right;">0.3535534</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oxalidaceae</td>
+<td style="text-align: right;">0.7500000</td>
+<td style="text-align: right;">0.3535534</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Acanthaceae</td>
+<td style="text-align: right;">0.6666667</td>
+<td style="text-align: right;">0.2886751</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Asclepiadaceae</td>
+<td style="text-align: right;">0.6250000</td>
+<td style="text-align: right;">0.2500000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cuscutaceae</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Euphorbiaceae</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Linaceae</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nyctaginaceae</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Violaceae</td>
+<td style="text-align: right;">0.5000000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <p>Next we’ll learn to use <code>mutate()</code>, which is a function to create a new column based on contents form an existing column.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># select pulls out the columns you want</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># mutate creates a mew column with whatever content you want</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># which can include manipulation of an existing column</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>konza_data <span class="sc">%&gt;%</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(scientificName, family, percentCover) <span class="sc">%&gt;%</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">propCover =</span> percentCover <span class="sc">/</span> <span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 468 × 4
-   scientificName                           family     percentCover propCover
-   &lt;chr&gt;                                    &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;
- 1 Schizachyrium scoparium (Michx.) Nash    Poaceae             7       0.07 
- 2 Lespedeza violacea (L.) Pers.            Fabaceae            8       0.08 
- 3 Lespedeza capitata Michx.                Fabaceae            1       0.01 
- 4 &lt;NA&gt;                                     &lt;NA&gt;                2       0.02 
- 5 Sporobolus heterolepis (A. Gray) A. Gray Poaceae             4       0.04 
- 6 Andropogon gerardii Vitman               Poaceae            10       0.1  
- 7 Dalea candida Michx. ex Willd.           Fabaceae            0.5     0.005
- 8 Sorghastrum nutans (L.) Nash             Poaceae             5       0.05 
- 9 Brickellia eupatorioides (L.) Shinners   Asteraceae          3       0.03 
-10 Amorpha canescens Pursh                  Fabaceae            2       0.02 
-# ℹ 458 more rows</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 56%">
+<col style="width: 11%">
+<col style="width: 18%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">scientificName</th>
+<th style="text-align: left;">family</th>
+<th style="text-align: right;">percentCover</th>
+<th style="text-align: right;">propCover</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">93</td>
+<td style="text-align: right;">0.93</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">95</td>
+<td style="text-align: right;">0.95</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">95</td>
+<td style="text-align: right;">0.95</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: right;">0.91</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">89</td>
+<td style="text-align: right;">0.89</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">94</td>
+<td style="text-align: right;">0.94</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">87</td>
+<td style="text-align: right;">0.87</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: right;">0.91</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">96</td>
+<td style="text-align: right;">0.96</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">0.88</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">0.80</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: right;">0.82</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.81</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">92</td>
+<td style="text-align: right;">0.92</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">94</td>
+<td style="text-align: right;">0.94</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">0.90</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">93</td>
+<td style="text-align: right;">0.93</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sporobolus heterolepis (A. Gray) A. Gray</td>
+<td style="text-align: left;">Poaceae</td>
+<td style="text-align: right;">94</td>
+<td style="text-align: right;">0.94</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">0.83</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">89</td>
+<td style="text-align: right;">0.89</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <p>Next up, we’ll use <code>ggplot2</code> to make some figures</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>konza_data <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(family)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(family <span class="sc">==</span> <span class="st">"Asteraceae"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> elevation,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">y =</span> percentCover,</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">group =</span> elevation)) <span class="sc">+</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cover of Asteraceae by Elevation"</span>,</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Percent Cover"</span>,</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Elevation"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="konza_analysis_files/figure-html/elevation-percent-by-family-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="konza_analysis_files/figure-html/histogram-percent-cover-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next steps</h2>
+<ol type="1">
+<li>follow up on the really high percent cover values. Maybe say &gt;25%?</li>
+</ol>
+<p>Looks like it’s mostly soil and dead plant matter.</p>
 <p>The following plot shows how the percent cover of Poaceae changes, or doesn’t change, with elevation differences. This is visualized to see how elevation impacts the presence of Poaceae.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>konza_data <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(family)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(family <span class="sc">==</span> <span class="st">"Poaceae"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> elevation,</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">y =</span> percentCover,</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">group =</span> elevation)) <span class="sc">+</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cover of Poaceae by Elevation"</span>,</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Percent Cover"</span>,</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Elevation"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -297,61 +703,6 @@ date  (1): endDate
 <p>This shows that elevation does not significantly impact the presence of Poaceae.</p>
 <p>Next, we will visualize the percent cover of Fabaceae by elevtion. This is to analyze how elevation impacts the prevelence of Fabacea through a smooth best- fit line on a point graph.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: comparison-of-fabaceae-by-elevation</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>konza_data <span class="sc">%&gt;%</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(family)) <span class="sc">%&gt;%</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(family <span class="sc">==</span> <span class="st">"Fabaceae"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> elevation,</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> percentCover,</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> family)) <span class="sc">+</span> </span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Compariosn of Fabaceae by Elevation"</span>,</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Percent Cover"</span>,</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Elevation (m)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using method = 'loess' and formula = 'y ~ x'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-: pseudoinverse used at 350.63</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-: neighborhood radius 50.565</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-: reciprocal condition number 7.7795e-17</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-: There are other near singularities as well. 2486.5</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x
-else if (is.data.frame(newdata))
-as.matrix(model.frame(delete.response(terms(object)), : pseudoinverse used at
-350.63</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x
-else if (is.data.frame(newdata))
-as.matrix(model.frame(delete.response(terms(object)), : neighborhood radius
-50.565</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x
-else if (is.data.frame(newdata))
-as.matrix(model.frame(delete.response(terms(object)), : reciprocal condition
-number 7.7795e-17</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in predLoess(object$y, object$x, newx = if (is.null(newdata)) object$x
-else if (is.data.frame(newdata))
-as.matrix(model.frame(delete.response(terms(object)), : There are other near
-singularities as well. 2486.5</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -363,13 +714,6 @@ singularities as well. 2486.5</code></pre>
 <p>This shows that Fabacea is most prevelent at elevations around 400m.</p>
 <p>Next, we will visualize family elevation vs.&nbsp;percent cover in a point graph. This is to create an easily readable color coded graph to see which families are more prevelent at different elevations.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: family-elevation-percent-cover </span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> konza_data <span class="sc">%&gt;%</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>           <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(family)),</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> elevation,</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> percentCover)) <span class="sc">+</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> family))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

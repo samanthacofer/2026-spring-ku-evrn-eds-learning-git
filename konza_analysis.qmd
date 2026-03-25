@@ -2,6 +2,10 @@
 title: "Konza Vegetation Analysis"
 author: "Samantha Cofer"
 format: html
+execute: 
+  echo: false
+  warning: false
+  messege: false
 ---
 
 ## Introduction 
@@ -22,6 +26,8 @@ to open into R.
 library("readr")
 library("dplyr")
 library("ggplot2")
+library("ggthemes")
+library("knitr")
 
 # read in the data
 konza_data <- read_csv("data/NEON.D06.KONZ.DP1.10058.001.div_1m2Data.2025-08.basic.20251222T234053Z.csv")
@@ -39,7 +45,8 @@ We'll next use the dplyr package to summarize some different apsects of the data
 konza_data %>% 
   group_by(family) %>%
   tally() %>%
-  arrange(desc(n))
+  arrange(desc(n)) %>%
+  kable()
 ```
 
 This analysis showed that Poaceae and Asteraceae are among the most common family
@@ -53,7 +60,8 @@ konza_data %>%
   group_by(family) %>%
   summarise(mean_pcnt_cover = mean(percentCover),
             sd_pcnt_cover = sd(percentCover)) %>%
-  arrange(desc(mean_pcnt_cover))
+  arrange(desc(mean_pcnt_cover)) %>%
+  kable()
 ```
 
 This analysis showed that the largest percent cover is the `NA` taxa, which means
@@ -69,7 +77,8 @@ konza_data %>%
   group_by(family) %>%
   summarise(mean_pcnt_cover = mean(percentCover),
             sd_pcnt_cover = sd(percentCover)) %>%
-  arrange(desc(mean_pcnt_cover))
+  arrange(desc(mean_pcnt_cover)) %>%
+  kable()
 ```
 
 Next we'll learn to use `mutate()`, which is a function to create a new column based on contents form an existing column.
@@ -82,26 +91,31 @@ Next we'll learn to use `mutate()`, which is a function to create a new column b
 # which can include manipulation of an existing column
 konza_data %>%
   select(scientificName, family, percentCover) %>%
-  mutate(propCover = percentCover / 100)
+  mutate(propCover = percentCover / 100) %>%
+  top_n(20) %>%
+  kable()
 ```
 
 
 Next up, we'll use `ggplot2` to make some figures 
 
 ```{r}
-#| label: elevation-percent-by-family
+#| label: histogram-percent-cover
 
 konza_data %>%
   filter(!is.na(family)) %>%
-  filter(family == "Asteraceae") %>%
-  ggplot() +
-  geom_boxplot(aes(x = elevation,
-                   y = percentCover,
-                   group = elevation)) +
-  labs(title = "Cover of Asteraceae by Elevation",
-       y = "Percent Cover",
-       x = "Elevation")
+  ggplot(aes(x = percentCover)) +
+  geom_histogram() +
+  labs(title = "Histogram of Percent Cover, All Species",
+     x = "Percent Cover") +
+  theme_bw()
 ```
+
+## Next steps 
+
+1. follow up on the really high percent cover values. Maybe say >25%?
+
+Looks like it's mostly soil and dead plant matter.
 
 The following plot shows how the percent cover of Poaceae changes, or doesn't 
 change, with elevation differences. This is visualized to see how elevation
