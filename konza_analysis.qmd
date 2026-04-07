@@ -1,7 +1,7 @@
 ---
 title: "Konza Vegetation Analysis"
 author: "Samantha Cofer"
-format: docx
+format: html
 execute: 
   echo: false
   warning: false
@@ -132,8 +132,8 @@ konza_data %>%
                    y = percentCover,
                    group = elevation)) +
   labs(title = "Cover of Poaceae by Elevation",
-       y = "Percent Cover",
-       x = "Elevation")
+       y = "Percent Cover (%)",
+       x = "Elevation in Meters")
 ```
 
 This shows that elevation does not significantly impact the presence of Poaceae.
@@ -156,8 +156,8 @@ konza_data %>%
   geom_point() +
   geom_smooth() +
   labs(title = "Compariosn of Fabaceae by Elevation",
-       y = "Percent Cover",
-       x = "Elevation (m)")
+       y = "Percent Cover (%)",
+       x = "Elevation in Meters")
 ```
 
 This shows that Fabacea is most prevelent at elevations around 400m. 
@@ -174,7 +174,10 @@ which families are more prevelent at different elevations.
            filter(!is.na(family)),
        aes(x = elevation,
            y = percentCover)) +
-  geom_point(aes(color = family))
+  geom_point(aes(color = family)) +
+  labs(title = "Percent Cover by Family",
+       y = "Percent Cover (%)",
+       x = "Family")
   
 ```
 
