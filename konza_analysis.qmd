@@ -117,6 +117,8 @@ konza_data %>%
 
 Looks like it's mostly soil and dead plant matter.
 
+## Homework: Exploratory Data Analysis
+
 The following plot shows how the percent cover of Poaceae changes, or doesn't 
 change, with elevation differences. This is visualized to see how elevation
 impacts the presence of Poaceae. 
